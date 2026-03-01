@@ -8,15 +8,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pageObject.LandingPage;
 
 import java.time.Duration;
 
 
 public class LandingPageStepDefinition {
 
-    TestSetup testSetup;
     public WebDriver driver;
     public String landingPageProductName;
+    TestSetup testSetup;
 
 
     public LandingPageStepDefinition(TestSetup testSetup) {
@@ -34,10 +35,17 @@ public class LandingPageStepDefinition {
     @When("User search the with shortname with {string} and extracted actual name of Product")
     public void user_search_the_with_shortname_with_and_extracted_actual_name_of_product(String shortname) {
 
-        testSetup.driver.findElement(By.xpath("//input[@class='search-keyword']")).sendKeys(shortname);
+        LandingPage landingPage = new LandingPage(testSetup.driver);
+        landingPage.searchIteam(shortname);
+
+        ///testSetup.driver.findElement(By.xpath("//input[@class='search-keyword']")).sendKeys(shortname);
+
         WebDriverWait wait = new WebDriverWait(testSetup.driver, Duration.ofSeconds(15));
         wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("h4[class='product-name']"), 1));
-        testSetup.landingPageProductName = testSetup.driver.findElement(By.cssSelector("h4[class='product-name']")).getText().split("-")[0].trim();
+
+        testSetup.landingPageProductName = landingPage.getproductName().split("-")[0].trim();
+
+        ///testSetup.landingPageProductName = testSetup.driver.findElement(By.cssSelector("h4[class='product-name']")).getText().split("-")[0].trim();
         System.out.println(testSetup.landingPageProductName + " is extracted from the Home Page");
     }
 
